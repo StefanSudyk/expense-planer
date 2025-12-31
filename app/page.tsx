@@ -91,7 +91,7 @@ export default function AddExpenseForm({
       onSubmit={handleSubmit}
       className="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
     >
-      <h2 className="text-xl font-bold mb-4 text-center">ADodaj wydatek</h2>
+      <h2 className="text-xl font-bold mb-4 text-center">Dodaj wydatek</h2>
 
       {error && <p className="text-red-600 mb-3">{error}</p>}
 
