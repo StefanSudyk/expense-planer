@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Expense } from '@/domain/model';
+import AddExpenseForm from './AddExpenseForm';
 
 type ExpenseInput = {
   title: string;
