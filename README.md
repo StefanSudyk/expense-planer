@@ -26,7 +26,7 @@ Najszybszy sposób na postawienie projektu bez konieczności instalowania Node.j
 
 1.  Sklonuj repozytorium:
     ```bash
-    git clone [https://github.com/StefanSudyk/expense-planer.git](https://github.com/StefanSudyk/expense-planer.git)
+    git clone https://github.com/StefanSudyk/expense-planer.git
     ```
 2.  Zainstaluj zależności:
     ```bash
