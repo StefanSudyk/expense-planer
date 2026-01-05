@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Expense Tracker - System Zarządzania Wydatkami
 
-## Getting Started
+Projekt na przedmiot Wykład Monograficzny
 
-First, run the development server:
+##  Technologie
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* **Next.js 16** (App Router & Server Actions)
+* **React 19** (Concurrent Rendering)
+* **Prisma 7** (ORM & Database Management)
+* **Język:** TypeScript
+* **Stylizacja:** Tailwind CSS
+* **Baza danych:** SQLite (lokalnie)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+##  Uruchomienie za pomocą Docker Compose
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Najszybszy sposób na postawienie projektu bez konieczności instalowania Node.js lokalnie:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  Upewnij się, że masz zainstalowany **Docker** i **Docker Compose**.
+2.  Uruchom komendę:
+    ```bash
+    docker-compose up --build
+    ```
+3.  Aplikacja będzie dostępna pod adresem: [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+##  Uruchomienie lokalne (bez Dockera)
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1.  Sklonuj repozytorium:
+    ```bash
+    git clone [https://github.com/StefanSudyk/expense-planer.git](https://github.com/StefanSudyk/expense-planer.git)
+    ```
+2.  Zainstaluj zależności:
+    ```bash
+    npm install
+    ```
+3.  Uruchom serwer deweloperski:
+    ```bash
+    npm run dev
+    ```
+4.  Otwórz [http://localhost:3000](http://localhost:3000) w przeglądarce.
