@@ -1,5 +1,11 @@
 import { Expense } from './model';
 
+export const EMPTY_FILTER = { from: '', to: '' };
+
+export const hasActiveFilter = (filter: typeof EMPTY_FILTER): boolean => {
+  return filter.from !== '' && filter.to !== '';
+};
+
 export const addExpense = (
   expenses:  Expense[],
   expense: Expense

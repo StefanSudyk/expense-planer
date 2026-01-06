@@ -1,4 +1,3 @@
-// components/ExpensesView.tsx
 import { Expense } from '@/domain/model';
 import { PAGE_STYLES } from '../styles/formStyles';
 import { ExpenseList } from './ExpenseList';

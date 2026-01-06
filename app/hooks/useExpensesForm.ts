@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Expense } from '@/domain/model';
 import { validateExpense } from '../utils/validation';
-import { submitExpense } from '../services/expenseService';
+import { submitExpenseApi } from '../services/expenseService';
+import { parseAmount, isValidAmountInput } from '../utils/formatters';
 
 export function useExpenseForm(onSuccess: (expense: Expense) => void) {
   const [input, setInput] = useState({ title: '', amount: '', date: '' });
@@ -11,14 +12,10 @@ export function useExpenseForm(onSuccess: (expense: Expense) => void) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    if (name === 'amount') {
-
-      const regex = /^[0-9]*[.,]?[0-9]{0,2}$/;
-      
-      if (value !== '' && !regex.test(value)) {
-        return;
-      }
+    if (name === 'amount' && !isValidAmountInput(value)) {
+      return;
     }
+
     setInput(prev => ({ ...prev, [name]: value }));
   };
 
@@ -34,13 +31,17 @@ export function useExpenseForm(onSuccess: (expense: Expense) => void) {
 
     setLoading(true);
     try {
-      const amountNum = Number(input.amount.replace(',', '.'));
-      const data = await submitExpense({ ...input, amount: amountNum });
+      const amountNum = parseAmount(input.amount);
+      
+      const data = await submitExpenseApi({ 
+        ...input, 
+        amount: amountNum 
+      });
 
       onSuccess(data); 
       setInput({ title: '', amount: '', date: '' }); 
-    } catch (err: any) {
-      setError(err.message ?? 'Wystąpił nieoczekiwany błąd');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Wystąpił nieoczekiwany błąd');
     } finally {
       setLoading(false);
     }

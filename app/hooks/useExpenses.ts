@@ -5,38 +5,36 @@ import {
   paginateExpenses, 
   totalPages, 
   calculateTotal,
-  filterByDateRange 
-} from '@/domain/expenses'; 
+  filterByDateRange,
+  EMPTY_FILTER,     
+  hasActiveFilter   
+} from '@/domain/expenses';
+
+import { fetchExpensesApi, deleteExpenseApi } from '../services/expenseService';
 
 export function useExpenses(itemsPerPage: number = 5) { 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [dateFilter, setDateFilter] = useState({ from: '', to: '' });
+  const [dateFilter, setDateFilter] = useState(EMPTY_FILTER); 
 
   useEffect(() => {
-    fetch('/api')
-      .then(res => res.json())
-      .then(data => setExpenses(data.expenses || []));
+    fetchExpensesApi()
+      .then(setExpenses)
+      .catch(err => console.error("Błąd ładowania:", err));
   }, []);
 
-  // WAŻNE: Kiedy zmieniasz filtr, wróć na pierwszą stronę.
-  // Bez tego, jeśli byłeś na stronie 10, a filtr zostawił tylko 1 stronę, widziałbyś pustą listę.
   useEffect(() => {
     setCurrentPage(1);
   }, [dateFilter]);
 
-  // LOGIKA PRZETWARZANIA
   const filteredItems = useMemo(() => {
-    if (dateFilter.from && dateFilter.to) {
-      return filterByDateRange(expenses, dateFilter.from, dateFilter.to);
-    }
-    return expenses;
+    return hasActiveFilter(dateFilter) 
+      ? filterByDateRange(expenses, dateFilter.from, dateFilter.to)
+      : expenses;
   }, [expenses, dateFilter]);
 
-  // Obliczenia - wyciągamy oba totale, żebyś mógł zdecydować w UI co pokazać
-  const totalAll = calculateTotal(expenses);      // Suma absolutnie wszystkiego
-  const totalFiltered = calculateTotal(filteredItems); // Suma tylko z zakresu dat
-
+  const totalAll = calculateTotal(expenses);      
+  const totalFiltered = calculateTotal(filteredItems); 
   const pagedExpenses = paginateExpenses(filteredItems, currentPage, itemsPerPage);
   const maxPages = totalPages(filteredItems, itemsPerPage);
 
@@ -44,25 +42,19 @@ export function useExpenses(itemsPerPage: number = 5) {
     setExpenses(prev => [newExp, ...prev]); 
   };
 
-  const isFiltered = dateFilter.from !== '' && dateFilter.to !== '';
-
   const applyFilter = (from: string, to: string) => setDateFilter({ from, to });
-  const clearFilter = () => setDateFilter({ from: '', to: '' });
+  const clearFilter = () => setDateFilter(EMPTY_FILTER); 
 
   const onDelete = async (id: number) => {
     const backupExpenses = [...expenses];
     setExpenses(prev => removeExpense(prev, id));
 
     try {
-      const response = await fetch('/api', { 
-        method: 'DELETE', 
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }) 
-      });
-      if (!response.ok) throw new Error(); 
-    } catch (err) {
+      await deleteExpenseApi(id);
+    } catch (err: unknown) {
       setExpenses(backupExpenses); 
-      alert("Nie udało się usunąć wydatku.");
+      const message = err instanceof Error ? err.message : "Błąd usuwania";
+      alert(message);
     }
   };
 
@@ -70,14 +62,12 @@ export function useExpenses(itemsPerPage: number = 5) {
     expenses: pagedExpenses, 
     total: totalAll,            
     filteredTotal: totalFiltered, 
-    isFiltered,
+    isFiltered: hasActiveFilter(dateFilter),
     currentPage, 
     maxPages, 
     applyFilter,
     clearFilter,
     setCurrentPage, 
-    dateFilter,    
-    setDateFilter, 
     addExpense: onAdd, 
     deleteExpense: onDelete 
   };

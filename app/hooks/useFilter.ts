@@ -1,35 +1,33 @@
 import { useState, ChangeEvent } from 'react';
+import { EMPTY_FILTER } from '@/domain/expenses';
 
 export function useFilterForm(
   onApplyFilter: (from: string, to: string) => void,
   onClear: () => void
 ) {
-  const [localFrom, setLocalFrom] = useState('');
-  const [localTo, setLocalTo] = useState('');
+  const [localDates, setLocalDates] = useState(EMPTY_FILTER);
 
-  const handleFromChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLocalFrom(e.target.value);
-  };
-
-  const handleToChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLocalTo(e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLocalDates(prev => ({ 
+      ...prev, 
+      [name]: value 
+    }));
   };
 
   const handleApply = () => {
-    onApplyFilter(localFrom, localTo);
+    onApplyFilter(localDates.from, localDates.to);
   };
 
   const handleReset = () => {
-    setLocalFrom('');
-    setLocalTo('');
+    setLocalDates(EMPTY_FILTER); 
     onClear();
   };
 
   return {
-    localFrom,
-    localTo,
-    handleFromChange, 
-    handleToChange,   
+    localFrom: localDates.from,
+    localTo: localDates.to,
+    handleChange, 
     handleApply,
     handleReset
   };
